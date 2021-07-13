@@ -41,3 +41,6 @@ cd /vagrant
 ./mini-docker run hello-world
 # ---> run command called! image: hello-world
 ```
+
+## ハンズオン
+---> [ハンズオン資料](./LESSONS.md)
