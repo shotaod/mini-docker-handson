@@ -3,6 +3,10 @@
 
 ## セットアップ
 
+### vagrantのインストール
+
+https://www.vagrantup.com/downloads
+
 ### VMの作成と起動
 
 ```bash
