@@ -1,0 +1,36 @@
+#!/usr/bin/python3
+
+import click
+
+from commands.run import exec_run
+from commands.images import exec_images
+from commands.pull import exec_pull
+
+
+@click.group()
+def cli():
+    pass
+
+
+@click.command()
+def images():
+    exec_images()
+
+
+@click.command()
+def pull():
+    exec_pull()
+
+
+@click.command(context_settings={'ignore_unknown_options': True})
+def run():
+    exec_run()
+
+
+cli.add_command(images)
+cli.add_command(pull)
+cli.add_command(run)
+
+
+if __name__ == '__main__':
+    cli()

@@ -1,0 +1,13 @@
+.vagrant
+__pycache__/
+*.py[cod]
+*$py.class
+workspace.code-workspace
+.DS_Store
+
+libs/build
+libs/dist
+linux.egg-info
+
+.idea
+.vscode
