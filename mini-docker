@@ -2,9 +2,9 @@
 
 import click
 
-from commands.run import exec_run
 from commands.images import exec_images
 from commands.pull import exec_pull
+from commands.run import exec_run
 
 
 @click.group()
@@ -23,14 +23,14 @@ def pull():
 
 
 @click.command(context_settings={'ignore_unknown_options': True})
-def run():
-    exec_run()
+@click.argument('command', nargs=-1)
+def run(command):
+    exec_run(command)
 
 
 cli.add_command(images)
 cli.add_command(pull)
 cli.add_command(run)
-
 
 if __name__ == '__main__':
     cli()
