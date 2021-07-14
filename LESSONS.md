@@ -1,26 +1,74 @@
 # Lessons
 
-## 子プロセスを立ち上げてみよう
+## Lesson 0. Lessonで使用するファイルを眺めてみよう
+
+```
+/
+├── commands
+│    ├── __init__.py
+│    ├── config.py
+│    ├── data.py
+│    ├── format.py
+│    ├── images.py
+│    ├── pull.py
+│    └── run.py
+├── LESSONS.md
+└── mini-docker
+```
+
+- mini-docker ファイル
+
+mini-docker コマンド受け付けるpythonファイルです。
+このファイルが、コマンドを、各関数にマッピングシています。
+
+- commands ディレクトリ
+コマンドラインの操作の実装ファイルが置いてあります。
+
+コマンドとの対応関係 (詳細は、mini-docker ファイルを参照)
+
+|       command        |      .py file      |
+|----------------------|--------------------|
+| ./mini-docker images | commands/images/py |
+| ./mini-docker pull   | commands/pull.py   |
+| ./mini-docker run    | commands/run.py    |
+
+
+以下は、Lessonを進めるときに使用するヘルパーファイルです (参照するレッスンで後述します)
+- commands/config.py
+- commands/data.py
+- commands/fetch.py
+- commands/format.py
+- commands/local.py
+
+
+## Lesson 1. 子プロセスを立ち上げてみよう
 
 ### clone システムコールとはなにか確認してみよう
 
 - ドキュメント https://linuxjm.osdn.jp/html/LDP_man-pages/man2/clone.2.html
 
-### clone システムコールを呼び出してみよう
+### 1-1. clone システムコールを呼び出してみよう
 
 #### 実装
 - ファイル `commands/run.py`
 - 使用するモジュール `linux`
-- 使用する関数 `linux.clone(callback: Callable[[], None], flags: int, *callback_args)`
+- 使用する関数 
+  ```
+  linux.clone(
+    callback: Callable[[], None], 
+    flags: int, 
+    *callback_args
+  )
+  ```
 
 #### 確認 (VM)
 ```shell
 cd /vagrant
 
-./mini-docker run~~~~
+./mini-docker run
 ```
 
-### 子プロセスでコマンドを受け取れるようにしてみよう
+### 1-2.子プロセスでコマンドを受け取れるようにしてみよう
 
 #### 実装①
 - ファイル `mini-docker`
@@ -34,6 +82,11 @@ cd /vagrant
 - 使用する関数 `os.execvp(file: str, args: str[])`
 
 
+#### 実装③ ~子プロセスのコマンドが終了するまでwaitする~
+- ファイル `commands/run.py`
+- 使用するモジュール `os`
+- 使用する関数 `os.wait(pid: int)`
+
 
 #### 確認 (VM)
 ```shell
@@ -42,8 +95,7 @@ cd /vagrant
 # ---> hello world
 ```
 
-
-### 子プロセスでpidを出力して、確認してみよう
+### 1-3. 子プロセスでpidを出力して、確認してみよう
 
 #### 実装
 - ファイル `commands/run.py`
@@ -66,22 +118,24 @@ ps
 ```
 
 
-## リソースを制御してみよう
+## Lesson 2. リソースを制御してみよう
 
-### cgroupを利用してcpuを制限してみよう
+### 2-1. cgroupを利用してcpuを制限してみよう
 
 #### 実装
 - ファイル `commands/run.py`
-- 使用するモジュール `cgroups`
-- 使用するクラス/関数
-    - cgroups.Cgroup
-    - Cgroup.set_cpu_limit(cpus: int)
-    - Cgroup.add(pid: int)
+- 使用するモジュール `commands.cgroup as cgroup`
+- 使用するクラス `cgroup.Cgroup`
+- 使用する関数
+    - `Cgroup.set_cpu_limit(cpu: float)`
+    - `Cgroup.add(pid: int)`
 
-### コマンドラインのオプションからcpu上限を設定できるようにしてみよう
+### 2-2. コマンドラインのオプションからcpu上限を設定できるようにしてみよう
 
-#### 実装①
-- ファイル `mini-docker`
+#### 実装
+- ファイル 
+  - `mini-docker`
+  - `commands/run.py`
 - 使用するモジュール `click`
 - 使用する関数アノテーション `@click.option`
 
@@ -113,7 +167,7 @@ cd /vagrant
 ```
 
 
-## UTS名前空間を分離させてみよう
+## Lesson 3. UTS名前空間を分離させてみよう
 
 ### UTS名前空間を分離させてプロセスを立ち上げてみよう
 
@@ -145,7 +199,7 @@ hostname
 ```
 
 
-## PID名前空間を分離させてみよう
+## Lesson 4. PID名前空間を分離させてみよう
 
 ### PID名前空間を分離させてプロセスを立ち上げてみよう
 
@@ -178,16 +232,24 @@ ps a
 # 子プロセスのpidがhost側と分離されていることを確認
 ```
 
-## dockerイメージを触ってみよう
+## Lesson 5. dockerイメージを触ってみよう
 
 ### dockerイメージをpullしてみよう
 
 #### 実装
 - ファイル `commands/pull.py`
+- 使用するモジュール
+    - `tarfile`
+    - `commands.fetch`
 - 使用する関数
-    - `_fetch_auth_token`
-    - `_fetch_manifest`
-    - `_fetch_layer`
+    - tarfile
+      - `tarfile.write`
+      - `tarfile.open`
+      - `tarfile.extractall`
+    - commands.fetch
+      - `fetch_auth_token`
+      - `fetch_manifest`
+      - `fetch_layer`
 
 #### 確認
 ```shell
@@ -198,23 +260,40 @@ cd /vagrant
 ./mini-docker pull busybox
 ```
 
+
 ### dockerイメージの一覧をいい感じに出力してみよう
 - ファイル `commands/images.py`
-- 使用するモジュール `terminaltables`
-- 使用するクラス `AsciiTable(data: str[][])`
-- 使用する関数 `AsciiTable.table`
+- 使用するモジュール 
+  - `terminaltables as tt`
+  - `commands.local as local`
+- 使用するクラス `tt.AsciiTable(data: str[][])`
+- 使用する関数
+  - `local.find_images()`
+  - `tt.AsciiTable.table`
 
 #### 確認
 ```shell
 cd /vagrant
 
 ./mini-docker images
+
+# ---> ？？？
 ```
 
-## dockerイメージのファイルシステムを子プロセスで扱えるようにしてみよう
+## Lesson 6. dockerイメージを動かしてみよう
+
+### dockerイメージのファイルを子プロセスで扱えるようにしてみよう
+
 - ファイル `commands/run.py`
 
-### 実装① 子プロセス用のディレクトリ群を作成する
+#### 実装① 子プロセス用のディレクトリ群を作成する
+- 使用するモジュール `commands.data`
+- 使用するクラス 
+  - `Image`
+  - `Container`
+- 使用する関数
+  - `Container.init_from_image(image: Image)`
+- ディレクトリのアウトプットイメージ
 ```
 /var/opt/app/container/<container identifier>/
 ├── cow_rw
@@ -222,8 +301,19 @@ cd /vagrant
 └── cow_workdir
     └── work
 ```
+- 実装イメージ
+```python
+# run.py
 
-### 実装② 子プロセスのディレクトリ群をoverlayfsとしてマウントする
+def _mount_overlay_fs(image: Image, container: Container):
+    # todo implement here
+    pass
+```
+
+
+#### 実装② 子プロセスのディレクトリ群をoverlayfsとしてマウントする
+実装①で準備したディレクトリ群をマウントしてみよう
+
 - 使用するモジュール `linux`
 - 使用する関数
   ```python
@@ -236,11 +326,11 @@ cd /vagrant
   )
   ```
 
-### 実装③ 子プロセスのルートディレクトリを変更する
+#### 実装③ 子プロセスのルートディレクトリを変更する
 - 使用するモジュール `os`
 - 使用する関数 `os.chroot(path: str)`
 
-### 確認 (VM)
+#### 確認 (VM)
 
 ```shell
 cd /vagrant
@@ -260,7 +350,7 @@ ls -la
 
 ```
 
-## 各種linuxシステムディレクトリをマウントしよう
+## Lesson 7. 各種linuxシステムディレクトリをマウントしよう
 
 ### 実装
 ```python
@@ -278,10 +368,9 @@ linux.mount('proc', proc_dir, 'proc', 0, '')
 linux.mount('sysfs', sys_dir, 'sysfs', 0, '')
 ```
 
-
 ---
 
-todo write
+今後の展望
 
 - /dev/nullなどのデバイスをマウントしよう
 - ポートフォワードでwebサーバーを起動してみよう
