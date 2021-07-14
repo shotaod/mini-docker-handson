@@ -5,6 +5,9 @@ import linux
 
 
 def child_proc_callback(option: dict):
+    pid = os.getpid()
+    print(f'pid: {pid}')
+
     command = option['commands']
     os.execvp(command[0], command)
 
