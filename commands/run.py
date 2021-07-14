@@ -3,10 +3,16 @@ from typing import List
 
 import linux
 
+import commands.cgroup as cgroup
+
 
 def child_proc_callback(option: dict):
     pid = os.getpid()
     print(f'pid: {pid}')
+
+    cg = cgroup.CGroup('hogehoge')
+    cg.set_cpu_limit(.25)
+    cg.add(pid)
 
     command = option['commands']
     os.execvp(command[0], command)
