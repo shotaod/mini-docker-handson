@@ -32,14 +32,14 @@ cat /etc/os-release
 ```bash
 cd /vagrant
 
-./mini-docker pull hello-world
-# ---> pull command called! image: hello-world
+./mini-docker pull
+# ---> pull command called!
 
 ./mini-docker images
 # ---> images command called!
 
-./mini-docker run hello-world
-# ---> run command called! image: hello-world
+./mini-docker run
+# ---> run command called!
 ```
 
 お疲れさまです。
