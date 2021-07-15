@@ -3,9 +3,10 @@ from typing import List
 
 import linux
 
-import commands.local as local
 import commands.cgroup as cgroup
 import commands.data as data
+import commands.format as fmt
+import commands.local as local
 
 
 def child_proc_callback(option: dict):
@@ -28,10 +29,10 @@ def child_proc_callback(option: dict):
     os.execvp(command[0], command)
 
 
-def exec_run(cpu: float, commands: List[str]):
-
-    image = next((v for v in local.find_images() if v.name == 'library/busybox'), None)
-    print(f'found busybox image : {image}')
+def exec_run(image_name, cpu: float, commands: List[str]):
+    registry, image, tag = fmt.parse_image_opt(image_name)
+    image = next((v for v in local.find_images() if v.name == f'{registry}/{image}' and v.version == tag), None)
+    print(f'running {image}')
 
     container = data.Container.init_from_image(image)
 
