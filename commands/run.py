@@ -3,6 +3,7 @@ from typing import List
 
 import linux
 
+import commands.local as local
 import commands.cgroup as cgroup
 
 
@@ -23,6 +24,10 @@ def child_proc_callback(option: dict):
 
 
 def exec_run(cpu: float, commands: List[str]):
+
+    image = next((v for v in local.find_images() if v.name == 'library/busybox'), None)
+    print(f'found busybox image : {image}')
+
     flags = linux.CLONE_NEWUTS
     option = {'cpu': cpu, 'commands': commands}
     pid = linux.clone(child_proc_callback, flags, (option,))
