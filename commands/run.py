@@ -20,6 +20,10 @@ def child_proc_callback(option: dict):
 
     linux.sethostname('container-process')
 
+    container = option['container']
+    os.chroot(container.root_dir)
+    os.chdir('/')
+
     command = option['commands']
     os.execvp(command[0], command)
 
@@ -40,7 +44,7 @@ def exec_run(cpu: float, commands: List[str]):
     )
 
     flags = linux.CLONE_NEWUTS
-    option = {'cpu': cpu, 'commands': commands}
+    option = {'cpu': cpu, 'commands': commands, 'container': container}
     pid = linux.clone(child_proc_callback, flags, (option,))
 
     os.waitpid(pid, 0)
