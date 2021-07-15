@@ -5,9 +5,6 @@ import commands.format as fmt
 
 
 def exec_images():
-    print('images command called!')
-    return
-
     print('fetching images')
     images = local.find_images()
     header = [['name', 'version', 'size', 'path']]
