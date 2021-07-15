@@ -5,6 +5,7 @@ import linux
 
 import commands.local as local
 import commands.cgroup as cgroup
+import commands.data as data
 
 
 def child_proc_callback(option: dict):
@@ -27,6 +28,16 @@ def exec_run(cpu: float, commands: List[str]):
 
     image = next((v for v in local.find_images() if v.name == 'library/busybox'), None)
     print(f'found busybox image : {image}')
+
+    container = data.Container.init_from_image(image)
+
+    linux.mount(
+        'overlay',
+        container.root_dir,
+        'overlay',
+        linux.MS_NODEV,
+        f"lowerdir={image.content_dir},upperdir={container.rw_dir},workdir={container.work_dir}"
+    )
 
     flags = linux.CLONE_NEWUTS
     option = {'cpu': cpu, 'commands': commands}
