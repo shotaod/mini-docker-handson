@@ -16,12 +16,14 @@ def child_proc_callback(option: dict):
         cg.set_cpu_limit(cpu)
         cg.add(pid)
 
+    linux.sethostname('container-process')
+
     command = option['commands']
     os.execvp(command[0], command)
 
 
 def exec_run(cpu: float, commands: List[str]):
-    flags = 0
+    flags = linux.CLONE_NEWUTS
     option = {'cpu': cpu, 'commands': commands}
     pid = linux.clone(child_proc_callback, flags, (option,))
 
