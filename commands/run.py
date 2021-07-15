@@ -25,7 +25,10 @@ def child_proc_callback(option: dict):
     os.chroot(container.root_dir)
     os.chdir('/')
 
+    image = option['image']
     command = option['commands']
+    command = command if len(command) > 0 else image.cmd
+
     os.execvp(command[0], command)
 
 
@@ -45,7 +48,7 @@ def exec_run(image_name, cpu: float, commands: List[str]):
     )
 
     flags = linux.CLONE_NEWUTS
-    option = {'cpu': cpu, 'commands': commands, 'container': container}
+    option = {'cpu': cpu, 'commands': commands, 'container': container, 'image': image}
     pid = linux.clone(child_proc_callback, flags, (option,))
 
     os.waitpid(pid, 0)
