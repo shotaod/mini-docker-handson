@@ -164,11 +164,11 @@ s-tui
 # 2. プロセス立ち上げ用のVM
 cd /vagrant
 
-./mini-docker run --cpus 0.5 yes > /dev/null
+./mini-docker run --cpu 0.5 bash -c 'yes > /dev/null'
 # 1.確認用のVMでcpuの推移を見てみる
 ^C
 
-./mini-docker run --cpus 0.1 yes > /dev/null
+./mini-docker run --cpu 0.1 bash -c 'yes > /dev/null'
 # 1.確認用のVMでcpuの推移を見てみる
 ^C
 ```
