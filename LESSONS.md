@@ -267,7 +267,7 @@ ls /var/opt/app/images/library_busybox_latest/contents/
   - `Container.init_from_image(image: Image)`
 - ディレクトリ構成
 ```
-/var/opt/app/container/tmp/
+/var/opt/app/container/{image_name}_{version}_{uuid}
 ├── rw
 └── work
 ```
