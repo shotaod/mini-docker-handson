@@ -77,6 +77,7 @@ cd /vagrant
 #### 実装①
 - ファイル `mini-docker`
 - 使用するモジュール `click`
+  - 参照: https://click.palletsprojects.com
 - 使用する関数アノテーション `@click.argument`
 
 
@@ -89,7 +90,7 @@ cd /vagrant
 #### 実装③ 〜子プロセスのコマンドが終了するまでwaitする〜
 - ファイル `commands/run.py`
 - 使用するモジュール `os`
-- 使用する関数 `os.wait(pid: int)`
+- 使用する関数 `os.waitpid(pid: int, options: int)`
 
 
 #### 確認 (VM)
@@ -129,10 +130,11 @@ ps
 #### 実装
 - ファイル `commands/run.py`
 - 使用するモジュール `commands.cgroup as cgroup`
-- 使用するクラス `cgroup.Cgroup`
+- 使用するクラス `cgroup.CGroup`
+  - 参照: https://github.com/francisbouvier/cgroups
 - 使用する関数
-    - `Cgroup.set_cpu_limit(cpu: float)`
-    - `Cgroup.add(pid: int)`
+    - `CGroup.set_cpu_limit(cpu: float)`
+    - `CGroup.add(pid: int)`
 
 ### 2-2. コマンドラインのオプションからcpu上限を設定できるようにしてみよう
 
@@ -155,6 +157,7 @@ cd /vagrant
 
 s-tui
 ```
+参照: [amanusk/s-tui](https://github.com/amanusk/s-tui)
 
 
 ```shell
@@ -176,7 +179,7 @@ cd /vagrant
 - ファイル `commands/run.py`
 - 使用するモジュール `linux`
 - 使用する関数 `linux.clone(callback: Callable[[], None], flags: int, *callback_args)`
-- 使用するフラグ(UTS名前空間) `linus.CLONE_NEWUTS`
+- 使用するフラグ(UTS名前空間) `linux.CLONE_NEWUTS`
 
 #### 実装② 〜子プロセスでhostnameを変更する〜
 - ファイル `commands/run.py`
@@ -205,7 +208,7 @@ hostname
 - ファイル `commands/run.py`
 - 使用するモジュール `linux`
 - 使用する関数 `linux.clone(callback: Callable[[], None], flags: int, *callback_args)`
-- 使用するフラグ(PID名前空間) `linus.CLONE_NEWPID`
+- 使用するフラグ(PID名前空間) `linux.CLONE_NEWPID`
 
 #### 実装② 〜子プロセスでpidを出力する〜
 - ファイル `commands/run.py`
@@ -264,7 +267,7 @@ ls /var/opt/app/images/library_busybox_latest/contents/
   - `Container.init_from_image(image: Image)`
 - ディレクトリ構成
 ```
-/var/opt/app/container/tmp/
+/var/opt/app/container/{image_name}_{version}_{uuid}
 ├── rw
 └── work
 ```
