@@ -19,7 +19,7 @@
 - mini-docker ファイル
 
 mini-docker コマンド受け付けるpythonファイルです。
-このファイルが、コマンドを、各関数にマッピングシています。
+このファイルが、コマンドを各関数にマッピングしています。
 
 - commands ディレクトリ
 コマンドラインの操作の実装ファイルが置いてあります。
@@ -96,7 +96,7 @@ cd /vagrant
 #### 確認 (VM)
 ```shell
 cd /vagrant
-./mini-docker echo hello world
+./mini-docker run echo hello world
 # ---> hello world
 ```
 
