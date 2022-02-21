@@ -391,7 +391,7 @@ ls -la /var/opt/app/container/library-busybox_latest_<container_id>/
 
 ```
 
-### 4-2. manifest.jsonのCMDをデフォルトコマンドとして使用できるようにシてみよう
+### 4-2. manifest.jsonのCMDをデフォルトコマンドとして使用できるようにしてみよう
 
 #### 動作確認
 ```shell
