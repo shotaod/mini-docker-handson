@@ -7,6 +7,8 @@
 
 https://www.vagrantup.com/downloads
 
+※ m1macの場合vagrantが利用できないかもしれません。その場合は他のソフトウェア（UTMなど）でも大丈夫なのでubuntu-20.10の環境が立ち上がればOKです。
+
 ### VMの作成と起動
 
 ```bash
