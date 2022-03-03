@@ -206,8 +206,6 @@ hostname
 
 #### 実装①
 - ファイル `commands/run.py`
-- 使用するモジュール `linux`
-- 使用する関数 `linux.clone(callback: Callable[[], None], flags: int, *callback_args)`
 - 使用するフラグ(PID名前空間) `linux.CLONE_NEWPID`
 
 #### 実装② 〜子プロセスでpidを出力する〜
@@ -234,7 +232,7 @@ ps a
 ```
 
 
-## Lesson 3. OverlayFs を使用してファイルをマウントしてみよう
+## Lesson 3. マウント名前空間内で、OverlayFs を使用してファイルをマウントしてみよう
 
 ### 3-1. pythonからイメージを扱ってみよう
 
@@ -249,6 +247,7 @@ ps a
 - 確認 
 ```shell
 ls /var/opt/app/images/library_busybox_latest/contents/
+# bin  dev  etc  home  root  tmp  usr  var
 ```
 
 #### 実装 busybox イメージをpythonから取得してみよう
@@ -257,7 +256,7 @@ ls /var/opt/app/images/library_busybox_latest/contents/
 - 使用するモジュール `commands.local as local`
 - 使用する関数 `local.find_images()`
 
-### 3-2. イメージのファイル群をOverlayFsとしてマウントしてみよう
+### 3-2. マウント名前空間内で、イメージのファイル群をOverlayFsとしてマウントしてみよう
 
 #### 実装① コンテナ用のディレクトリを用意しよう
 - 使用するモジュール `commands.data`
@@ -275,10 +274,14 @@ ls /var/opt/app/images/library_busybox_latest/contents/
 
 - mountがごちゃついたときのtips
 ```
-mount -t overlay | cut -d ' ' -f 3 | xargs -I@@ umount -f @@
+mount -t overlay | cut -d ' ' -f 3 | sudo xargs -I@@ umount -f @@
 ```
 
-#### 実装② 準備したディレクトリ群をoverlayfsとしてマウントしてみよう
+#### 実装② マウント名前空間を分離させてみよう
+- ファイル `commands/run.py`
+- 使用するフラグ(マウント名前空間) `linux.CLONE_NEWNS`
+
+#### 実装③ 準備したディレクトリ群をoverlayfsとしてマウントしてみよう
 
 - 使用するモジュール 
   - `linux`
@@ -344,7 +347,7 @@ exit
 
 # 〜〜〜 host の処理 〜〜〜
 
-# tmp.txtがないことを確認
+# overlayfsの確認：imagesのcontentsは読み取りdirのためtmp.txtがないことを確認
 
 ls -la  /var/opt/app/images/library_busybox_latest/contents/
 # --->
@@ -359,7 +362,7 @@ ls -la  /var/opt/app/images/library_busybox_latest/contents/
 # drwxr-xr-x  3 root   root     4096 Jun  7 17:34 usr
 # drwxr-xr-x  4 root   root     4096 Jun  7 17:34 var
 
-# tmp.txtはどこへ？
+# マウント名前空間の確認：マウント名前空間でマウントしたdirに追加したtmp.txtは、hostからは見えない
 
 ls -la /var/opt/app/container/library-busybox_latest_<container_id>/
 # ---> 
@@ -368,11 +371,8 @@ ls -la /var/opt/app/container/library-busybox_latest_<container_id>/
 # drwxr-xr-x 2 root   root    12288 Jun  7 17:34 bin
 # drwxr-xr-x 2 root   root     4096 Jun  7 17:34 dev
 # ...
-# -rw-r--r-- 1 root   root       36 Jul 15 12:56 tmp.txt
-# ...
 # drwxr-xr-x 3 root   root     4096 Jun  7 17:34 usr
 # drwxr-xr-x 4 root   root     4096 Jun  7 17:34 var
-
 ```
 
 
