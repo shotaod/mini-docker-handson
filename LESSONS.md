@@ -277,11 +277,7 @@ ls /var/opt/app/images/library_busybox_latest/contents/
 mount -t overlay | cut -d ' ' -f 3 | sudo xargs -I@@ umount -f @@
 ```
 
-#### 実装② マウント名前空間を分離させてみよう
-- ファイル `commands/run.py`
-- 使用するフラグ(マウント名前空間) `linux.CLONE_NEWNS`
-
-#### 実装③ 準備したディレクトリ群をoverlayfsとしてマウントしてみよう
+#### 実装② 準備したディレクトリ群をoverlayfsとしてマウントしてみよう
 
 - 使用するモジュール 
   - `linux`
@@ -311,9 +307,8 @@ mount -t overlay | cut -d ' ' -f 3 | sudo xargs -I@@ umount -f @@
 - 使用する関数 
   - `os.chroot(path: str)`
   - `os.chdir(path: str)`
-
-
-### overlayfsの動作確認 (VM)
+  
+### overlayfsの動作確認 
 
 ```shell
 cd /vagrant
@@ -347,7 +342,7 @@ exit
 
 # 〜〜〜 host の処理 〜〜〜
 
-# overlayfsの確認：imagesのcontentsは読み取りdirのためtmp.txtがないことを確認
+# imagesのcontentsは読み取りdirのためtmp.txtが見えない
 
 ls -la  /var/opt/app/images/library_busybox_latest/contents/
 # --->
@@ -362,9 +357,77 @@ ls -la  /var/opt/app/images/library_busybox_latest/contents/
 # drwxr-xr-x  3 root   root     4096 Jun  7 17:34 usr
 # drwxr-xr-x  4 root   root     4096 Jun  7 17:34 var
 
-# マウント名前空間の確認：マウント名前空間でマウントしたdirに追加したtmp.txtは、hostからは見えない
+# containerは書き込みdirのためtmp.txtが見える
 
 ls -la /var/opt/app/container/library-busybox_latest_<container_id>/
+# ---> 
+# drwxr-xr-x 1 root   root     4096 Jul 15 12:56 .
+# drwxr-xr-x 3 root   root     4096 Jul 15 12:56 ..
+# drwxr-xr-x 2 root   root    12288 Jun  7 17:34 bin
+# drwxr-xr-x 2 root   root     4096 Jun  7 17:34 dev
+# ...
+# -rw-r--r-- 1 root   root       36 Jul 15 12:56 tmp.txt
+# ...
+# drwxr-xr-x 3 root   root     4096 Jun  7 17:34 usr
+# drwxr-xr-x 4 root   root     4096 Jun  7 17:34 var
+```
+
+### 3-4. マウント名前空間を分離させてみよう
+- ファイル `commands/run.py`
+- 使用するフラグ(マウント名前空間) `linux.CLONE_NEWNS`
+
+### マウント名前空間の動作確認
+
+```shell
+cd /vagrant
+
+./mini-docker run busybox /bin/sh
+
+# 〜〜〜 プロセス内の処理 〜〜〜
+
+ls -la
+# --->
+# total 68
+# drwxr-xr-x    1 root     root          4096 Jul 13 03:05 .
+# drwxr-xr-x    1 root     root          4096 Jul 13 03:05 ..
+# drwxr-xr-x    2 root     root          4096 Jun 15 14:34 bin
+# drwxr-xr-x    2 root     root          4096 Jun 15 14:34 dev
+# ...
+
+echo 'this file is created from container' > tmp.txt 
+
+ls -la
+# --->
+# drwxr-xr-x    1 root     root          4096 Jul 15 12:48 .
+# drwxr-xr-x    1 root     root          4096 Jul 15 12:48 ..
+# drwxr-xr-x    2 root     root         12288 Jun  7 17:34 bin
+# drwxr-xr-x    2 root     root          4096 Jun  7 17:34 dev
+# ...
+# drwxrwxrwt    2 root     root          4096 Jun  7 17:34 tmp
+# ...
+
+exit
+
+# 〜〜〜 host の処理 〜〜〜
+
+# imagesのcontentsは読み取りdirのためtmp.txtが見えない
+
+ls -la  /var/opt/app/images/library_busybox_latest/contents/
+# --->
+# drwxr-xr-x 10 root   root     4096 Jul 15 10:31 .
+# drwxr-xr-x  4 root   root     4096 Jul 15 10:31 ..
+# drwxr-xr-x  2 root   root    12288 Jun  7 17:34 bin
+# drwxr-xr-x  2 root   root     4096 Jun  7 17:34 dev
+# drwxr-xr-x  3 root   root     4096 Jun  7 17:34 etc
+# drwxr-xr-x  2 nobody nogroup  4096 Jun  7 17:34 home
+# drwx------  2 root   root     4096 Jun  7 17:34 root
+# drwxrwxrwt  2 root   root     4096 Jun  7 17:34 tmp
+# drwxr-xr-x  3 root   root     4096 Jun  7 17:34 usr
+# drwxr-xr-x  4 root   root     4096 Jun  7 17:34 var
+
+# containerは書き込みdirだが、マウント名前空間内でマウントしたためhostからはtmp.txtが見えない
+ls -la /var/opt/app/container/library-busybox_latest_<container_id>/
+※ containerがたくさんあって最新がどれかわからなくなった時は、アンマウントした上でcontainer配下を一度消すとよい
 # ---> 
 # drwxr-xr-x 1 root   root     4096 Jul 15 12:56 .
 # drwxr-xr-x 3 root   root     4096 Jul 15 12:56 ..
@@ -374,7 +437,6 @@ ls -la /var/opt/app/container/library-busybox_latest_<container_id>/
 # drwxr-xr-x 3 root   root     4096 Jun  7 17:34 usr
 # drwxr-xr-x 4 root   root     4096 Jun  7 17:34 var
 ```
-
 
 ## Lesson 4. dockerイメージを指定して動かしてみよう
 
