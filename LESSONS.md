@@ -244,6 +244,7 @@ ps a
 ```shell
 ./mini-docker pull busybox
 ```
+※m1macの人はイメージ名を `arm64v8/busybox` で実行する必要がありそう
 
 - 確認 
 ```shell
