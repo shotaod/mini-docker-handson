@@ -22,10 +22,19 @@ def child_proc_callback(option: dict):
     linux.sethostname('container-process')
 
     container = option['container']
+    image = option['image']
+
+    linux.mount(
+        'overlay',
+        container.root_dir,
+        'overlay',
+        linux.MS_NODEV,
+        f"lowerdir={image.content_dir},upperdir={container.rw_dir},workdir={container.work_dir}"
+    )
+
     os.chroot(container.root_dir)
     os.chdir('/')
 
-    image = option['image']
     command = option['commands']
     command = command if len(command) > 0 else image.cmd
 
@@ -39,15 +48,11 @@ def exec_run(image_name, cpu: float, commands: List[str]):
 
     container = data.Container.init_from_image(image)
 
-    linux.mount(
-        'overlay',
-        container.root_dir,
-        'overlay',
-        linux.MS_NODEV,
-        f"lowerdir={image.content_dir},upperdir={container.rw_dir},workdir={container.work_dir}"
+    flags = (
+            linux.CLONE_NEWPID | # PID名前空間
+            linux.CLONE_NEWUTS | # UTS名前空間
+            linux.CLONE_NEWNS # マウント名前空間
     )
-
-    flags = linux.CLONE_NEWUTS
     option = {'cpu': cpu, 'commands': commands, 'container': container, 'image': image}
     pid = linux.clone(child_proc_callback, flags, (option,))
 
