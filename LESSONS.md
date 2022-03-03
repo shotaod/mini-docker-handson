@@ -19,7 +19,7 @@
 - mini-docker ファイル
 
 mini-docker コマンド受け付けるpythonファイルです。
-このファイルが、コマンドを、各関数にマッピングシています。
+このファイルが、コマンドを各関数にマッピングしています。
 
 - commands ディレクトリ
 コマンドラインの操作の実装ファイルが置いてあります。
@@ -96,7 +96,7 @@ cd /vagrant
 #### 確認 (VM)
 ```shell
 cd /vagrant
-./mini-docker echo hello world
+./mini-docker run echo hello world
 # ---> hello world
 ```
 
@@ -164,11 +164,11 @@ s-tui
 # 2. プロセス立ち上げ用のVM
 cd /vagrant
 
-./mini-docker run --cpus 0.5 yes > /dev/null
+./mini-docker run --cpu 0.5 bash -c 'yes > /dev/null'
 # 1.確認用のVMでcpuの推移を見てみる
 ^C
 
-./mini-docker run --cpus 0.1 yes > /dev/null
+./mini-docker run --cpu 0.1 bash -c 'yes > /dev/null'
 # 1.確認用のVMでcpuの推移を見てみる
 ^C
 ```
@@ -244,6 +244,7 @@ ps a
 ```shell
 ./mini-docker pull busybox
 ```
+※m1macの人はイメージ名を `arm64v8/busybox` で実行する必要がありそう
 
 - 確認 
 ```shell
@@ -391,7 +392,7 @@ ls -la /var/opt/app/container/library-busybox_latest_<container_id>/
 
 ```
 
-### 4-2. manifest.jsonのCMDをデフォルトコマンドとして使用できるようにシてみよう
+### 4-2. manifest.jsonのCMDをデフォルトコマンドとして使用できるようにしてみよう
 
 #### 動作確認
 ```shell
