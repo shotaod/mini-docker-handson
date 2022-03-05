@@ -7,6 +7,7 @@ def child_proc_callback(command: List[str]):
     os.execvp(command[0], command)
 
 def exec_run(command: List[str]):
+    print(os.getpid())
     flags = 0
     child_pid = linux.clone(
         child_proc_callback,
