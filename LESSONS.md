@@ -92,7 +92,6 @@ cd /vagrant
 - 使用するモジュール `os`
 - 使用する関数 `os.waitpid(pid: int, options: int)`
 
-
 #### 確認 (VM)
 ```shell
 cd /vagrant
@@ -110,16 +109,10 @@ cd /vagrant
 #### 確認 (VM)
 ```shell
 cd /vagrant
-
-ps
-# --->
-#    PID TTY      STAT   TIME COMMAND
-#    701 tty1     Ss+    0:00 /sbin/agetty -o -p -- \u --noclear tty1 linux
-#  50902 pts/0    Ss     0:00 -bash
-#  50954 pts/0    R+     0:00 ps a
  
 ./mini-docker run
-# ---> pid: ???
+# ---> exec_runのpid: ??? ※ 親プロセスのpidも出力して比較すると理解が深まると思います
+# ---> 子プロセスのpid: ???
 ```
 
 
