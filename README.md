@@ -7,7 +7,10 @@
 
 https://www.vagrantup.com/downloads
 
-※ m1macの場合vagrantが利用できないかもしれません。その場合は他のソフトウェア（UTMなど）でも大丈夫なのでubuntu-20.10の環境が立ち上がればOKです。
+※ m1macの方はvagrantが利用できないかもしれません。その場合は他のソフトウェア（UTMなど）を利用し、ubuntu-20.xの環境が立ち上がればOKです。
+環境ができたら `vagrant up` で行われるprovisioner.sh内の処理を実行してください。
+
+参考: https://gihyo.jp/admin/serial/01/ubuntu-recipe/0672
 
 ### VMの作成と起動
 
