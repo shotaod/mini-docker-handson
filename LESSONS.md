@@ -188,11 +188,11 @@ cd /vagrant
 hostname
 # ---> vagrant
 
-./mini-docker run
-# ---> set hostname: "container"
+./mini-docker run /bin/sh
 
+# 〜〜〜 プロセス内の処理 〜〜〜
 hostname
-# ---> vagrant
+# ---> ???
 # プロセスでのhostname変更が、host側と分離されていることを確認
 ```
 
