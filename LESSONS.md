@@ -312,7 +312,7 @@ mount -t overlay | cut -d ' ' -f 3 | xargs -I@@ umount -f @@
 ```shell
 cd /vagrant
 
-./mini-docker run busybox /bin/sh
+./mini-docker run /bin/sh
 
 # 〜〜〜 プロセス内の処理 〜〜〜
 
