@@ -24,6 +24,7 @@ def exec_run(cpu: float, command: List[str]):
     	linux.CLONE_NEWPID # PID名前空間
     )
     option = {'cpu': cpu, 'command': command}
+    
     child_pid = linux.clone(
         child_proc_callback,
         flags,
