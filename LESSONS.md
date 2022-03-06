@@ -111,7 +111,6 @@ cd /vagrant
 cd /vagrant
  
 ./mini-docker run
-# ---> exec_runのpid: ??? ※ 親プロセスのpidも出力して比較すると理解が深まると思います
 # ---> 子プロセスのpid: ???
 ```
 
