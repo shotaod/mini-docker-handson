@@ -248,10 +248,10 @@ ls /var/opt/app/images/library_busybox_latest/contents/
 
 - ファイル `commands/run.py`
 - 使用するモジュール
-  - `commands.format`
+  - `commands.format as fmt`
   - `commands.local as local`
 - 使用する関数
-  - `parse_image_opt`
+  - `fmt.parse_image_opt`
   - `local.find_images()`
 
 ### 3-2. イメージのファイル群をOverlayFsとしてマウントしてみよう
