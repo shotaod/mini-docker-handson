@@ -111,7 +111,6 @@ cd /vagrant
 cd /vagrant
  
 ./mini-docker run
-# ---> exec_runのpid: ??? ※ 親プロセスのpidも出力して比較すると理解が深まると思います
 # ---> 子プロセスのpid: ???
 ```
 
@@ -151,7 +150,8 @@ cd /vagrant
 s-tui
 ```
 参照: [amanusk/s-tui](https://github.com/amanusk/s-tui)
-
+※ s-tuiが使えなそうだったら、vmstatを実行しCPUのid（アイドル状態）を確認するでもいいです
+例） vmstat 5 100 ←5秒間の平均負荷を100回取得する
 
 ```shell
 # 2. プロセス立ち上げ用のVM
@@ -187,11 +187,11 @@ cd /vagrant
 hostname
 # ---> vagrant
 
-./mini-docker run
-# ---> set hostname: "container"
+./mini-docker run /bin/sh
 
+# 〜〜〜 プロセス内の処理 〜〜〜
 hostname
-# ---> vagrant
+# ---> ???
 # プロセスでのhostname変更が、host側と分離されていることを確認
 ```
 
