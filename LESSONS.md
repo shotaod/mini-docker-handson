@@ -247,8 +247,12 @@ ls /var/opt/app/images/library_busybox_latest/contents/
 #### 実装 busybox イメージをpythonから取得してみよう
 
 - ファイル `commands/run.py`
-- 使用するモジュール `commands.local as local`
-- 使用する関数 `local.find_images()`
+- 使用するモジュール
+  - `commands.format`
+  - `commands.local as local`
+- 使用する関数
+  - `parse_image_opt`
+  - `local.find_images()`
 
 ### 3-2. イメージのファイル群をOverlayFsとしてマウントしてみよう
 
