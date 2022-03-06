@@ -35,9 +35,8 @@ def child_proc_callback(option: dict):
     os.execvp(command[0], command)
 
 
-def exec_run(image_name: str, cpu: float, command: List[str]):
-    registry, image, tag = fmt.parse_image_opt(image_name)
-    image = next((v for v in local.find_images() if v.name == f'{registry}/{image}' and v.version == tag), None)
+def exec_run(cpu: float, command: List[str]):
+    image = next((v for v in local.find_images() if v.name == 'library/busybox'), None)
     print(f'running {image}')
     
     container = data.Container.init_from_image(image)
