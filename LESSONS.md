@@ -151,7 +151,8 @@ cd /vagrant
 s-tui
 ```
 参照: [amanusk/s-tui](https://github.com/amanusk/s-tui)
-
+※ s-tuiが使えなそうだったら、vmstatを実行しCPUのid（アイドル状態）を確認するでもいいです
+例） vmstat 5 100 ←5秒間の平均負荷を100回取得する
 
 ```shell
 # 2. プロセス立ち上げ用のVM
