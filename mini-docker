@@ -23,9 +23,10 @@ def pull():
 
 
 @click.command(context_settings={'ignore_unknown_options': True})
+@click.option('--cpu', default=None, type=float)
 @click.argument('command', nargs=-1)
-def run(command):
-    exec_run(command)
+def run(cpu, command):
+    exec_run(cpu, command)
 
 
 cli.add_command(images)
