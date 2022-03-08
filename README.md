@@ -14,10 +14,12 @@ vagrant ssh
 
 #### ※ m1macの方へ
 m1macではvagrantが利用できないようです。その場合は他のソフトウェア（UTMなど）を利用し、ubuntu-20.x（20.4推奨）の環境を用意してください。
-環境ができたら、本来は `vagrant up` の中で行われるprovisioner.sh内の処理を実行してください。（cd /vagrant...のコードを消して実行するなどの対応をお願いします🙇‍♀️）
-また、ハンズオンを進めるにあたりコードが書きやすい環境になっていると良いと思います。（ubuntu desktopを入れてeditorを起動する、ディレクトリのマウントをするなど）
 
 参考: https://gihyo.jp/admin/serial/01/ubuntu-recipe/0672
+
+環境ができたら、本来は `vagrant up` の中で行われるprovisioner.sh内の処理を実行してください。（cd /vagrant...のコードを消して実行するなどの対応をお願いします🙇‍♀️）
+また、ハンズオンを進めるにあたりコードが書きやすい環境になっていると良いと思います。
+（ubuntu desktopを入れてeditorを起動する、または[ディレクトリのマウントをする](https://github.com/ShotaOd/mini-docker-handson/blob/master/FORM1MAC.md)など）
 
 ### VMの動作確認
 以下の動作確認はVM内で実施してください。
