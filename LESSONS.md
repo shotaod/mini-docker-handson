@@ -78,7 +78,7 @@ cd /vagrant
 - ファイル `mini-docker`
 - 使用するモジュール `click`
   - 参照: https://click.palletsprojects.com
-- 使用する関数アノテーション `@click.argument`
+- 使用するデコレータ `@click.argument`
 
 
 #### 実装② 〜子プロセスで任意のコマンドを実行する〜
@@ -135,7 +135,7 @@ cd /vagrant
   - `mini-docker`
   - `commands/run.py`
 - 使用するモジュール `click`
-- 使用する関数アノテーション `@click.option`
+- 使用するデコレータ `@click.option`
 
 
 #### 確認
